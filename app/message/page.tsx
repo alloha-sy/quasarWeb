@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
-import useQA from "./useMessage";
+import useQA from "../_component/Table/useMessage";
 import { QAadd } from "../_settings/interface";
 
 export default function Message() {
   const [message, setMessage] = useState("");
-  const [products, createQA] = useQA();
+  const [QaList, createQA, deleteQA, updateQA] = useQA();
   const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
   };
@@ -41,14 +41,42 @@ export default function Message() {
     }
   };
   return (
-    <TextField
-      id="fullWidth"
-      fullWidth
-      label="問啥?"
-      variant="filled"
-      value={message}
-      onKeyDown={keyPress}
-      onChange={handleClick}
-    />
+    <>
+      <TextField
+        id="fullWidth"
+        fullWidth
+        label="問啥?"
+        variant="filled"
+        value={message}
+        onKeyDown={keyPress}
+        onChange={handleClick}
+      />
+      {QaList.map((x) => (
+        <div key={x.id}>
+          {x.question}/{x.answer}
+          <button onClick={() => deleteQA(x.id)}>del</button>
+          <button
+            onClick={() =>
+              updateQA({
+                id: x.id,
+                question: "??",
+                answer: "aaa",
+                qaAskTime: new Date(),
+                qaCheckTime: "123",
+                stuNum: "001", //學號
+                office: "資管", //目前指派單位
+                officeId: 1,
+                assignCount: 0, //轉介次數
+                history: ["資管"],
+                status: "pending", //狀態 e.g 是否審核過
+                QaCanCheck: false,
+              })
+            }
+          >
+            update
+          </button>
+        </div>
+      ))}
+    </>
   );
 }
