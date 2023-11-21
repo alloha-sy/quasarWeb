@@ -2,7 +2,6 @@
 import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import useQA from "../_component/Table/useMessage";
-import { QAadd } from "../_settings/interface";
 
 export default function Message() {
   const [message, setMessage] = useState("");
@@ -10,9 +9,7 @@ export default function Message() {
   const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
   };
-  const QAadd = (message: QAadd) => {
-    createQA(message);
-  };
+
   const handleSubmit = async () => {
     const res = await fetch(
       "https://fju-test3.cognitiveservices.azure.com/language/:query-knowledgebases?projectName=shelly-search-test&api-version=2021-10-01",
@@ -29,43 +26,36 @@ export default function Message() {
     );
     const result = await res.json();
     const answer = result.answers[0].answer;
-    QAadd({
+    createQA({
       question: message,
       answer,
     });
   };
+
   const keyPress = (ev: React.KeyboardEvent<HTMLDivElement>) => {
     console.log(`Pressed keyCode ${ev.key}`);
     if (ev.key === "Enter") {
       handleSubmit();
+      setMessage("");
     }
   };
   return (
     <>
-      <TextField
-        id="fullWidth"
-        fullWidth
-        label="問啥?"
-        variant="filled"
-        value={message}
-        onKeyDown={keyPress}
-        onChange={handleClick}
-      />
       {QaList.map((x) => (
-        <div key={x.id}>
+        <div key={x.qaId}>
           {x.question}/{x.answer}
-          <button onClick={() => deleteQA(x.id)}>del</button>
+          <button onClick={() => deleteQA(x.qaId)}>del</button>
           <button
             onClick={() =>
               updateQA({
-                id: x.id,
+                qaId: x.qaId,
                 question: "??",
                 answer: "aaa",
                 qaAskTime: new Date(),
                 qaCheckTime: "123",
                 stuNum: "001", //學號
                 office: "資管", //目前指派單位
-                officeId: 1,
+                officeId: "1",
                 assignCount: 0, //轉介次數
                 history: ["資管"],
                 status: "pending", //狀態 e.g 是否審核過
@@ -77,6 +67,15 @@ export default function Message() {
           </button>
         </div>
       ))}
+      <TextField
+        id="fullWidth"
+        fullWidth
+        label="問啥?"
+        variant="filled"
+        value={message}
+        onKeyUp={keyPress}
+        onChange={handleClick}
+      />
     </>
   );
 }

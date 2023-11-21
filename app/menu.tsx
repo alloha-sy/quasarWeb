@@ -14,7 +14,7 @@ import PendingActionsOutlinedIcon from "@mui/icons-material/PendingActionsOutlin
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import ContentPasteSearchOutlinedIcon from "@mui/icons-material/ContentPasteSearchOutlined";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const drawerWidth = 240;
 
@@ -68,6 +68,7 @@ const Drawer = styled(MuiDrawer, {
 export default function MiniDrawer() {
   //   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState("pending");
   const menuList = [
     {
       title: "待審核問題",
@@ -91,6 +92,7 @@ export default function MiniDrawer() {
     open ? setOpen(false) : setOpen(true);
   };
   const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <Drawer variant="permanent" open={open}>
@@ -113,6 +115,7 @@ export default function MiniDrawer() {
                 justifyContent: open ? "initial" : "center",
                 px: 2.5,
               }}
+              selected={pathname === x.url}
             >
               <ListItemIcon
                 sx={{

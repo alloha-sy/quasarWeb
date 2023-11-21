@@ -24,8 +24,9 @@ export default function useQA() {
       try {
         const data = await getDocs(qaRef);
         const list = data.docs.map((doc: any) => ({
-          ...doc.data(),
           id: doc.id,
+          qaId: doc.id,
+          ...doc.data(),
         }));
         setQalist(list);
       } catch (error) {
@@ -36,6 +37,7 @@ export default function useQA() {
   }, [updated, db]);
 
   const createQA = async (QAadd: QAadd) => {
+    console.log("run");
     try {
       await addDoc(collection(db, "QA"), {
         question: QAadd.question,
@@ -44,7 +46,7 @@ export default function useQA() {
         qaCheckTime: "",
         stuNum: "001", //學號
         office: "資管", //目前指派單位
-        officeId: 1,
+        officeId: "1",
         history: ["資管"],
         status: "pending", //狀態 e.g 是否審核過
       });
@@ -56,7 +58,7 @@ export default function useQA() {
 
   const updateQA = async (QA: QA) => {
     try {
-      await updateDoc(doc(db, "QA", QA.id), {
+      await updateDoc(doc(db, "QA", QA.qaId), {
         question: QA.question,
         answer: QA.answer,
         qaCheckTime: QA.QaCanCheck ? serverTimestamp() : "",
